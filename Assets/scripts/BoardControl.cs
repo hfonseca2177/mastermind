@@ -1,9 +1,8 @@
 ﻿using Rules;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
+using System;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class BoardControl : MonoBehaviour
 {
@@ -18,7 +17,8 @@ public class BoardControl : MonoBehaviour
     public GameObject lid;
 
     private RuleBook _ruleBook;
-    public int colorRangeSize = 4;
+    private MultiColorRule _multiColorRule;
+    public int colorRangeSize = 8;
 
 
     // Start is called before the first frame update
@@ -54,10 +54,8 @@ public class BoardControl : MonoBehaviour
 
     private void CreateRandomCypher()
     {
-        
-
-        //int color = Random.Range(1, 4);
-
+        Color[] colorPallete = ShuffleColors();
+        Array.ForEach(colorPallete, color => codePeg.CreateCodePeg(_headLine, color));
     }
 
     public void InitRuleBook()
@@ -65,17 +63,36 @@ public class BoardControl : MonoBehaviour
         ColorRepeatRule colorRepeatRule = new ColorRepeatRule();
         colorRepeatRule.repeatable = false;
 
-        MultiColorRule multiColorRule = new MultiColorRule();
-        multiColorRule.SetColorRange(colorRangeSize);
-        
-        _ruleBook = new RuleBook(new RuleSet[]{ colorRepeatRule, multiColorRule });
+        _multiColorRule = new MultiColorRule();
+
+        _multiColorRule.SetColorRange(colorRangeSize);
+
+        _ruleBook = new RuleBook(new RuleSet[] { colorRepeatRule, _multiColorRule });
     }
 
 
 
     public void InitBoard()
     {
-        _headLine = new Line();
-        _headLine.InitLine(0, new Vector3());
+        _headLine = Line.InitHeadLine();
+        CreateRandomCypher();
+        
+    }
+
+    private Color[] ShuffleColors()
+    {
+        Color[] colorPallete = _multiColorRule.GetColorRange();
+        
+        int n = colorPallete.Length;
+
+        while (n > 1)
+        {
+            int k = Random.Range(0, n--);
+            Color temp = colorPallete[n];
+            colorPallete[n] = colorPallete[k];
+            colorPallete[k] = temp;
+        }
+        
+        return colorPallete.Take(Line.maxCols).ToArray(); 
     }
 }

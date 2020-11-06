@@ -4,8 +4,11 @@ namespace Rules
 {
     public class MultiColorRule : RuleSet
     {
-        private Color[] _colorRange = { Color.blue, Color.red, Color.yellow, Color.green, new Color32(155, 0, 184, 255),
-        new Color32(255, 167, 56, 255), new Color32(251, 181, 230, 255), new Color32(180,227,255, 255)};
+        private Color[] _colorRange = { Color.blue, Color.red, Color.yellow, Color.green, 
+            new Color32(155, 0, 184, 255), //purple
+            new Color32(255, 167, 56, 255), //orange
+            new Color32(251, 181, 230, 255),//pink
+            new Color32(0,255,255, 255)}; //Aqua
 
         public Color[] colorSet;
 

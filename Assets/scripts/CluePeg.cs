@@ -19,7 +19,7 @@ public class CluePeg : MonoBehaviour
         Spot clueSpot = line.GetNextClueSpot();
         if (clueSpot.HasGameObject())
         {
-            clueSpot.SetPeg(color);
+            clueSpot.SetPegColor(color);
         }
         else
         {

@@ -3,17 +3,17 @@
 public class CodePeg : MonoBehaviour
 {
     public GameObject codePegRef;
-
-    private void CreateCodePeg(Line line, Color color)
+    
+    public void CreateCodePeg(Line line, Color color)
     {
         Spot codeSpot = line.GetNextCodeSpot();
         if (codeSpot.HasGameObject())
         {
-            codeSpot.SetPeg(color);
+            codeSpot.SetPegColor(color);
         }
         else
         {
-            GameObject newPeg = Instantiate(codePegRef, codeSpot.position, Quaternion.Euler(0, 0, 0));
+            GameObject newPeg = Instantiate(codePegRef, codeSpot.position, codeSpot.baseCodePegRotation);
             codeSpot.SetPeg(newPeg, color);
         }
     }

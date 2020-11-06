@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Line
 {
-    public int maxCols = 4;
+    public static int maxCols = 4;
     public int index = 0;
-    public int currentCodeIndex = 0;
-    public int currentClueIndex = 0;
+    public int currentCodeIndex = -1;
+    public int currentClueIndex = -1;
 
     public Spot[] code;
     public Spot[] clue;
 
-    public Line InitLine(int index, Vector3 position)
+    public static Line InitLine(int index, Vector3 position)
     {
         Line line = new Line
         {
@@ -24,14 +25,28 @@ public class Line
 
         for (int i = 0; i < maxCols; i++)
         {
-            line.code[i] = Spot.CreateCodeSpot(position);
-            line.clue[i] = Spot.CreateClueSpot(position);
+            line.code[i] = Spot.CreateCodeSpot(i, position);
+            line.clue[i] = Spot.CreateClueSpot(i, position);
         }
         return line;
     }
 
-    public Spot GetNextCodeSpot()
+    public static Line InitHeadLine()
     {
+        Line line = new Line
+        {
+            code = new Spot[maxCols]
+        };
+        for (int i = 0; i < maxCols; i++)
+        {
+            line.code[i] = Spot.CreateHeadCodeSpot(i);
+        }
+        return line;
+    }
+    
+
+    public Spot GetNextCodeSpot()
+    {        
         if (currentCodeIndex < maxCols)
         {
             currentCodeIndex++;
@@ -47,11 +62,25 @@ public class Line
         return this.clue[currentClueIndex];
     }
 
-    public void Clean()
+    public void CleanCodeLines()
     {
-        currentCodeIndex = 0;
-        currentClueIndex = 0;
+        CleanCodeSlots();
+        CleanClueSlots();
+    }
+
+    public void CleanHeadLine()
+    {
+        CleanCodeSlots();
+    }
+
+    private void CleanCodeSlots()
+    {
+        currentCodeIndex = -1;
         Array.ForEach(code, c => c.Clear());
+    }
+    private void CleanClueSlots()
+    {
+        currentClueIndex = -1;
         Array.ForEach(clue, c => c.Clear());
     }
 
