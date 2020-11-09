@@ -5,20 +5,30 @@ public class Spot
     public Vector3 position;
     public Color pegColor;
     public GameObject peg;
-    public Quaternion baseCodePegRotation = Quaternion.Euler(121.23f, -1.52588f, -1.52588f);
-    private static Vector3 baseHeadLinePosition = new Vector3(-1.24f, 7.89f, 4.696f);
-    private static float _horizontalOffsetCodeSpot = 1.65f;
+    public Quaternion baseCodePegRotation = Quaternion.Euler(180, 0, 0);
+    private static Vector3 baseHeadLinePosition = new Vector3(-0.022f, -0.117f, -11.62f);
     private const string _material_color_variable_name = "_Color";
 
+    public Quaternion CodePegRotation = Quaternion.Euler(180f, 0, 0);
+    private static Vector3 _baseLinePosition = new Vector3(0, 0, 0);
+    private static float _horizontalShiftPegOffset = -1.63f;
+    private static float _verticalShiftPegOffset = -1.118f;
 
-    public static Spot CreateClueSpot(int index, Vector3 position)
+
+    public static Spot CreateClueSpot(int lineIndex, int spotIndex)
     {
-        return CreateSpot(position);
+        //TODO implement CluePeg logic
+        float x = CalcCodeXPosition(spotIndex, baseHeadLinePosition.x);
+        Vector3 spotPosition = new Vector3(x, baseHeadLinePosition.y, baseHeadLinePosition.z);
+        return CreateSpot(spotPosition);
     }
 
-    public static Spot CreateCodeSpot(int index, Vector3 position)
+    public static Spot CreateCodeSpot(int lineIndex,  int spotIndex)
     {
-        return CreateSpot(position);
+        float x = CalcCodeXPosition(spotIndex, _baseLinePosition.x);
+        float z = CalcCodeZPosition(lineIndex, _baseLinePosition.z);
+        Vector3 spotPosition = new Vector3(x, _baseLinePosition.y, z);
+        return CreateSpot(spotPosition);
     }
     public static Spot CreateHeadCodeSpot(int index)
     {
@@ -30,8 +40,14 @@ public class Spot
 
     private static float CalcCodeXPosition(int spotIndex, float baseXPosition)
     {
-        float factor = spotIndex * _horizontalOffsetCodeSpot;
+        float factor = spotIndex * _horizontalShiftPegOffset;
         return factor + baseXPosition;
+    }
+
+    private static float CalcCodeZPosition(int lineIndex, float baseZPosition)
+    {
+        float factor = lineIndex * _verticalShiftPegOffset;
+        return factor + baseZPosition;
     }
 
     private static Spot CreateSpot(Vector3 position)

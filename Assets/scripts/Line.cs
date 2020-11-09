@@ -12,7 +12,7 @@ public class Line
     public Spot[] code;
     public Spot[] clue;
 
-    public static Line InitLine(int index, Vector3 position)
+    public static Line InitLine(int index)
     {
         Line line = new Line
         {
@@ -25,8 +25,8 @@ public class Line
 
         for (int i = 0; i < maxCols; i++)
         {
-            line.code[i] = Spot.CreateCodeSpot(i, position);
-            line.clue[i] = Spot.CreateClueSpot(i, position);
+            line.code[i] = Spot.CreateCodeSpot(index, i);
+            //line.clue[i] = Spot.CreateClueSpot(index, i);
         }
         return line;
     }

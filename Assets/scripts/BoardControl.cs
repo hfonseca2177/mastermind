@@ -55,7 +55,17 @@ public class BoardControl : MonoBehaviour
     private void CreateRandomCypher()
     {
         Color[] colorPallete = ShuffleColors();
+        _headLine = Line.InitHeadLine();
         Array.ForEach(colorPallete, color => codePeg.CreateCodePeg(_headLine, color));
+
+        _lines = new Line[10];
+        
+        for(int i = 0; i < 10; i++)
+        {
+            _lines[i] = Line.InitLine(i);
+            Array.ForEach(colorPallete, color => codePeg.CreateCodePeg(_lines[i], color));
+        }
+        
     }
 
     public void InitRuleBook()
