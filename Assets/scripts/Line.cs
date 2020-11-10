@@ -26,7 +26,7 @@ public class Line
         for (int i = 0; i < maxCols; i++)
         {
             line.code[i] = Spot.CreateCodeSpot(index, i);
-            //line.clue[i] = Spot.CreateClueSpot(index, i);
+            line.clue[i] = Spot.CreateClueSpot(index, i);
         }
         return line;
     }
@@ -71,6 +71,7 @@ public class Line
     public void CleanHeadLine()
     {
         CleanCodeSlots();
+        CleanClueSlots();
     }
 
     private void CleanCodeSlots()

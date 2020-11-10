@@ -8,18 +8,51 @@ public class Spot
     public Quaternion baseCodePegRotation = Quaternion.Euler(180, 0, 0);
     private static Vector3 baseHeadLinePosition = new Vector3(-0.022f, -0.117f, -11.62f);
     private const string _material_color_variable_name = "_Color";
-
-    public Quaternion CodePegRotation = Quaternion.Euler(180f, 0, 0);
+    
     private static Vector3 _baseLinePosition = new Vector3(0, 0, 0);
     private static float _horizontalShiftPegOffset = -1.63f;
-    private static float _verticalShiftPegOffset = -1.118f;
+    private static float _verticalShiftPegOffset = -1.115f;
 
+    public Quaternion baseCluePegRotation = Quaternion.Euler(90f, 0, 0);
+    private const float _baseClueXLeft = 2.581f;
+    private const float _baseClueXRight = 1.583f;
+    private const float _baseClueY = -0.072f;
+    private const float _baseClueZDown = 0.207f;
+    private const float _baseClueZTop = -0.22f;
+    private static float _verticalShiftClueOffset = -1.115f;
+
+    private static float CalcClueXPosition(float spotIndex)
+    {
+        float x;
+        if(spotIndex % 2 == 0)
+        {
+            x = _baseClueXLeft;
+        } else
+        {
+            x = _baseClueXRight;
+        }        
+        return x;
+    }
+
+    private static float CalcClueZPozition(int lineIndex, int spotIndex)
+    {
+        float z;
+        if(spotIndex <= 1){
+            z = _baseClueZDown;
+        }
+            else
+        {
+            z = _baseClueZTop;
+        }
+        return z + (lineIndex * _verticalShiftClueOffset);
+    }
 
     public static Spot CreateClueSpot(int lineIndex, int spotIndex)
     {
-        //TODO implement CluePeg logic
-        float x = CalcCodeXPosition(spotIndex, baseHeadLinePosition.x);
-        Vector3 spotPosition = new Vector3(x, baseHeadLinePosition.y, baseHeadLinePosition.z);
+
+        float x = CalcClueXPosition(spotIndex);
+        float z = CalcClueZPozition(lineIndex, spotIndex);
+        Vector3 spotPosition = new Vector3(x, _baseClueY, z);
         return CreateSpot(spotPosition);
     }
 

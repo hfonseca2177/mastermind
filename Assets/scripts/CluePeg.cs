@@ -11,7 +11,7 @@ public class CluePeg : MonoBehaviour
 
     public void CreateRightColorAndPositionCluePeg(Line line)
     {
-        CreateCluePeg(line, Color.white);
+        CreateCluePeg(line, Color.black);
     }
 
     private void CreateCluePeg(Line line, Color color)
@@ -23,7 +23,7 @@ public class CluePeg : MonoBehaviour
         }
         else
         {
-            GameObject newPeg = Instantiate(cluePegRef, clueSpot.position, Quaternion.Euler(0, 0, 0));
+            GameObject newPeg = Instantiate(cluePegRef, clueSpot.position, clueSpot.baseCluePegRotation);
             clueSpot.SetPeg(newPeg, color);
         }
     }

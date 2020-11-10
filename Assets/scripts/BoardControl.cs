@@ -64,6 +64,10 @@ public class BoardControl : MonoBehaviour
         {
             _lines[i] = Line.InitLine(i);
             Array.ForEach(colorPallete, color => codePeg.CreateCodePeg(_lines[i], color));
+            cluePeg.CreateRightColorCluePeg(_lines[i]);
+            cluePeg.CreateRightColorAndPositionCluePeg(_lines[i]);
+            cluePeg.CreateRightColorAndPositionCluePeg(_lines[i]);
+            cluePeg.CreateRightColorCluePeg(_lines[i]);            
         }
         
     }
