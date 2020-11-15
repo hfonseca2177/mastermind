@@ -3,11 +3,11 @@ using UnityEngine;
 
 public interface IRule 
 {
-    void ApplyRule(Player player, Line line, Line header);
+    void ApplyRule(Line line, CodeLine codeLine);
 
     void OnSetPeg(Line line, Color color);
 
-    void OnCodeCreation(Line header, Color color);
+    void OnCodeCreation(CodeLine codeLine, Color color);
 
     string GetDescription();
 

@@ -4,7 +4,7 @@ public class CodePeg : MonoBehaviour
 {
     public GameObject codePegRef;
     
-    public void CreateCodePeg(Line line, Color color)
+    public void CreateCodePeg(BaseLine line, Color color)
     {
         Spot codeSpot = line.GetNextCodeSpot();
         if (codeSpot.HasGameObject())

@@ -14,7 +14,7 @@ namespace Rules
 
         public int[] colorOptions = { 4, 6, 8 };
 
-        public override void ApplyRule(Player player, Line line, Line header)
+        public override void ApplyRule(Line line, CodeLine codeLine)
         {
             //nothing to do
         }
@@ -29,7 +29,7 @@ namespace Rules
             return "Color Range Option";
         }
 
-        public override void OnCodeCreation(Line header, Color color)
+        public override void OnCodeCreation(CodeLine codeLine, Color color)
         {
             //nothing to do
         }
@@ -51,6 +51,11 @@ namespace Rules
         public Color[] GetColorRange()
         {
             return colorSet;
+        }
+
+        public int GetMaxColors()
+        {
+            return _colorRange.Length;
         }
 
     }

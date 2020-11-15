@@ -7,7 +7,7 @@ namespace Rules
 
         public bool repeatable = false;
 
-        public override void ApplyRule(Player player, Line line, Line header)
+        public override void ApplyRule(Line line, CodeLine codeLine)
         {
             //nothing to do
         }
@@ -22,18 +22,17 @@ namespace Rules
             return "Repeatable Color";
         }
 
-        public override void OnCodeCreation(Line header, Color color)
+        public override void OnCodeCreation(CodeLine codeLine, Color color)
         {
-            foreach (Spot spot in header.code)
-            {
-                if (spot.HasPeg() && spot.pegColor == color)
-                {
-                    throw new System.ArgumentException("Can't repeat color");
-                }
-            }
+            ValidateRepeatedColor(codeLine, color);
         }
 
         public override void OnSetPeg(Line line, Color color)
+        {
+            ValidateRepeatedColor(line, color);
+        }
+
+        private void ValidateRepeatedColor(BaseLine line, Color color)
         {
             foreach (Spot spot in line.code)
             {

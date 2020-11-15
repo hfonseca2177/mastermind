@@ -2,14 +2,13 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using System.Collections.Generic;
 using Random = UnityEngine.Random;
 
 public class BoardControl : MonoBehaviour
 {
-    private Player _decoder;
-    private Player _cypher;
-
-    private Line _headLine;
+    
+    private CodeLine _codeLine;
     private Line[] _lines;
 
     public CluePeg cluePeg;
@@ -18,58 +17,28 @@ public class BoardControl : MonoBehaviour
 
     private RuleBook _ruleBook;
     private MultiColorRule _multiColorRule;
-    public int colorRangeSize = 8;
+
+    public int colorRangeSize;
+    private const int maxLines = 10;
+    private int _currentLineIndex = 0;
 
 
-    // Start is called before the first frame update
     void Start()
     {
-        StartGame();
+        InstantiateBoardGame();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
-
-    void StartGame()
-    {
-        CreateAIPlayerMatch();
+    void InstantiateBoardGame()
+    {        
         InitRuleBook();
-        InitBoard();
-    }
-
-    public void CreateRemotePlayersMatch()
-    {
-        _decoder = Player.CreateDecoder("john", "1-john");
-        _cypher = Player.CreateCypher("Mary", "2-mary");
-    }
-
-    public void CreateAIPlayerMatch()
-    {
-        _decoder = Player.CreateDecoder("john", "1-john");
-        _cypher = Player.CreateCypher("HALL9000", "ai");
-    }
-
-    private void CreateRandomCypher()
-    {
-        Color[] colorPallete = ShuffleColors();
-        _headLine = Line.InitHeadLine();
-        Array.ForEach(colorPallete, color => codePeg.CreateCodePeg(_headLine, color));
-
-        _lines = new Line[10];
-        
-        for(int i = 0; i < 10; i++)
+        _codeLine = CodeLine.InitCodeLine();
+        _lines = new Line[maxLines];
+        for (int i = 0; i < maxLines; i++)
         {
             _lines[i] = Line.InitLine(i);
-            Array.ForEach(colorPallete, color => codePeg.CreateCodePeg(_lines[i], color));
-            cluePeg.CreateRightColorCluePeg(_lines[i]);
-            cluePeg.CreateRightColorAndPositionCluePeg(_lines[i]);
-            cluePeg.CreateRightColorAndPositionCluePeg(_lines[i]);
-            cluePeg.CreateRightColorCluePeg(_lines[i]);            
         }
-        
+        colorRangeSize = _multiColorRule.GetMaxColors();
     }
 
     public void InitRuleBook()
@@ -84,13 +53,84 @@ public class BoardControl : MonoBehaviour
         _ruleBook = new RuleBook(new RuleSet[] { colorRepeatRule, _multiColorRule });
     }
 
-
-
-    public void InitBoard()
+    public void GenerateCodePegs()
     {
-        _headLine = Line.InitHeadLine();
-        CreateRandomCypher();
-        
+        Color[] colorPallete = ShuffleColors();
+        Array.ForEach(colorPallete, color => codePeg.CreateCodePeg(_codeLine, color));
+    }
+
+    public void CleanPegs()
+    {
+        _codeLine.CleanLine();
+        Array.ForEach(_lines, line => line.CleanCodeLines());
+        _currentLineIndex = 0;
+    }
+
+    public void SetCodePeg(Color color)
+    {
+        _ruleBook.ApplyRules(_lines[_currentLineIndex], _codeLine);
+        codePeg.CreateCodePeg(_lines[_currentLineIndex], color);
+    }
+
+    public bool IsCurrentLineCodeBreaker() => _lines[_currentLineIndex].IsSameCode(_codeLine);
+    
+
+    public void EvaluateClues() {
+        List<ClueResult> result = new List<ClueResult>();
+        for(int i=0; i< Line.maxCols; i++)
+        {
+            Spot spot = _lines[_currentLineIndex].code[i];
+            if (_codeLine.MatchColorPosition(spot.pegColor, i))
+            {
+                result.Add(ClueResult.POSITION);
+            }
+            else if (_codeLine.HasColor(spot.pegColor))
+            {
+                result.Add(ClueResult.COLOR);
+            }
+            else
+            {
+                result.Add(ClueResult.EMPTY);
+            }
+        }
+
+        var shuffledResult = result.OrderBy(x => Guid.NewGuid()).ToList();
+
+        foreach(ClueResult clueResult in shuffledResult)
+        {
+            if (ClueResult.COLOR.Equals(clueResult))
+            {
+                cluePeg.CreateRightColorCluePeg(_lines[_currentLineIndex]);
+            }else if (ClueResult.POSITION.Equals(clueResult))
+            {
+                cluePeg.CreateRightColorAndPositionCluePeg(_lines[_currentLineIndex]);
+            }
+        }
+    }
+
+    public bool IsLastLine()
+    {
+        return _currentLineIndex == (maxLines - 1);
+    }
+
+    public void CleanCurrentLine()
+    {
+        _lines[_currentLineIndex].CleanCodeLines();
+    }
+
+    public void MoveNextLine()
+    {
+        _currentLineIndex++;
+    }
+
+    public void ShowLid()
+    {
+        lid.SetActive(true);
+    }
+
+    public void HideLid()
+    {
+        lid.SetActive(false);
     }
 
     private Color[] ShuffleColors()

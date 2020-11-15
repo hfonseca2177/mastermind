@@ -12,21 +12,21 @@ public class RuleBook
         _rules = rules;
     }
 
-    public void ApplyRules(Player player, Line line, Line header)
+    public void ApplyRules(Line line, CodeLine codeLine)
     {
         foreach(IRule rule in this._rules){
-            rule.ApplyRule(player, line, header);
+            rule.ApplyRule(line, codeLine);
         }
     }
 
     public void SetCodePeg(Line line, Color color)
     {
-        Array.ForEach(_rules, rule => rule.OnSetPeg(line, color));        
+        Array.ForEach(_rules, rule => rule.OnSetPeg(line, color));
     }
 
-    public void OnCodeCreation(Line header, Color color)
+    public void OnCodeCreation(CodeLine codeLine, Color color)
     {
-        Array.ForEach(_rules, rule => rule.OnCodeCreation(header, color));
+        Array.ForEach(_rules, rule => rule.OnCodeCreation(codeLine, color));
     }
 
 }
