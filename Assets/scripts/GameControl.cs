@@ -58,7 +58,7 @@ public class GameControl : MonoBehaviour
             boardControl.MoveNextLine();
         }
     }
-
+      
     public void CleanLine()
     {
         boardControl.CleanCurrentLine();

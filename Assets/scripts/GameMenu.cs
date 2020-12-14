@@ -1,11 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameMenu : MonoBehaviour
 {
-    
+
+    [SerializeField] private GameObject toggleColorRepeate;
+    [SerializeField] private GameObject dropdownColorRange;
+
+    private void Start()
+    {
+        Toggle toggle = toggleColorRepeate.GetComponent<Toggle>();
+        if (toggle != null)
+        {
+            Debug.Log("Toggle Found!");
+            toggle.SetIsOnWithoutNotify(RuleBook.Instance.colorRepeatRule.repeatable);
+        }
+
+        TMP_Dropdown dropddown = dropdownColorRange.GetComponent<TMP_Dropdown>();
+        if (dropddown != null)
+        {
+            Debug.Log("DropDown Found!");
+            dropddown.value = RuleBook.Instance.multiColorRule.GetColorSet().Length;
+        }
+    }
 
     public void PlayGame()
     {

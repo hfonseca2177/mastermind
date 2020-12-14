@@ -27,16 +27,17 @@ public class RuleBook: MonoBehaviour
     private void Awake()
     {
         if (GameObject.Find(_instanceName)) Destroy(gameObject);
-    }
-
-
-    private void Start()
-    {
         colorRepeatRule = new ColorRepeatRule();
         colorRepeatRule.repeatable = false;
 
         multiColorRule = new MultiColorRule();
         multiColorRule.SetColorRange(_colorRangeSize);
+    }
+
+
+    private void Start()
+    {
+   
     }
 
 

@@ -2774,6 +2774,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc84406540cf9904faedb99567ef1eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toggleColorRepeate: {fileID: 85442067}
+  dropdownColorRange: {fileID: 1840947058}
 --- !u!1 &1750307204
 GameObject:
   m_ObjectHideFlags: 0
@@ -3191,6 +3193,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc84406540cf9904faedb99567ef1eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toggleColorRepeate: {fileID: 85442067}
+  dropdownColorRange: {fileID: 1840947058}
 --- !u!4 &1978481313
 Transform:
   m_ObjectHideFlags: 0
