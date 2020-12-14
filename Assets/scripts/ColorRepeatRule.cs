@@ -2,32 +2,17 @@
 
 namespace Rules
 {
-    public class ColorRepeatRule : RuleSet
+    public class ColorRepeatRule
     {
 
         public bool repeatable = false;
-
-        public override void ApplyRule(Line line, CodeLine codeLine)
-        {
-            //nothing to do
-        }
-
-        public override string GetDescription()
-        {
-            return "Can the code maker repeat color?";
-        }
-
-        public override string GetName()
-        {
-            return "Repeatable Color";
-        }
-
-        public override void OnCodeCreation(CodeLine codeLine, Color color)
+        
+        public void OnCodeCreation(CodeLine codeLine, Color color)
         {
             ValidateRepeatedColor(codeLine, color);
         }
 
-        public override void OnSetPeg(Line line, Color color)
+        public void OnSetPeg(Line line, Color color)
         {
             ValidateRepeatedColor(line, color);
         }

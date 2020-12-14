@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public class BoardControl : MonoBehaviour
 {
-    
+
     private CodeLine _codeLine;
     private Line[] _lines;
 
@@ -15,43 +15,21 @@ public class BoardControl : MonoBehaviour
     public CodePeg codePeg;
     public GameObject lid;
 
-    private RuleBook _ruleBook;
-    private MultiColorRule _multiColorRule;
 
-    public int colorRangeSize;
     private const int maxLines = 10;
     private int _currentLineIndex = 0;
 
-
-    void Start()
+    public void InstantiateBoardGame()
     {
-        InstantiateBoardGame();
-    }
 
-
-    void InstantiateBoardGame()
-    {        
-        InitRuleBook();
         _codeLine = CodeLine.InitCodeLine();
         _lines = new Line[maxLines];
         for (int i = 0; i < maxLines; i++)
         {
             _lines[i] = Line.InitLine(i);
         }
-        colorRangeSize = _multiColorRule.GetMaxColors();
     }
 
-    public void InitRuleBook()
-    {
-        ColorRepeatRule colorRepeatRule = new ColorRepeatRule();
-        colorRepeatRule.repeatable = false;
-
-        _multiColorRule = new MultiColorRule();
-
-        _multiColorRule.SetColorRange(colorRangeSize);
-
-        _ruleBook = new RuleBook(new RuleSet[] { colorRepeatRule, _multiColorRule });
-    }
 
     public void GenerateCodePegs()
     {
@@ -68,16 +46,16 @@ public class BoardControl : MonoBehaviour
 
     public void SetCodePeg(Color color)
     {
-        _ruleBook.ApplyRules(_lines[_currentLineIndex], _codeLine);
         codePeg.CreateCodePeg(_lines[_currentLineIndex], color);
     }
 
     public bool IsCurrentLineCodeBreaker() => _lines[_currentLineIndex].IsSameCode(_codeLine);
-    
 
-    public void EvaluateClues() {
+
+    public void EvaluateClues()
+    {
         List<ClueResult> result = new List<ClueResult>();
-        for(int i=0; i< Line.maxCols; i++)
+        for (int i = 0; i < Line.maxCols; i++)
         {
             Spot spot = _lines[_currentLineIndex].code[i];
             if (_codeLine.MatchColorPosition(spot.pegColor, i))
@@ -96,12 +74,13 @@ public class BoardControl : MonoBehaviour
 
         var shuffledResult = result.OrderBy(x => Guid.NewGuid()).ToList();
 
-        foreach(ClueResult clueResult in shuffledResult)
+        foreach (ClueResult clueResult in shuffledResult)
         {
             if (ClueResult.COLOR.Equals(clueResult))
             {
                 cluePeg.CreateRightColorCluePeg(_lines[_currentLineIndex]);
-            }else if (ClueResult.POSITION.Equals(clueResult))
+            }
+            else if (ClueResult.POSITION.Equals(clueResult))
             {
                 cluePeg.CreateRightColorAndPositionCluePeg(_lines[_currentLineIndex]);
             }
@@ -135,8 +114,8 @@ public class BoardControl : MonoBehaviour
 
     private Color[] ShuffleColors()
     {
-        Color[] colorPallete = _multiColorRule.GetColorRange();
-        
+        Color[] colorPallete = RuleBook.Instance.multiColorRule.GetColorSet();
+
         int n = colorPallete.Length;
 
         while (n > 1)
@@ -146,7 +125,7 @@ public class BoardControl : MonoBehaviour
             colorPallete[n] = colorPallete[k];
             colorPallete[k] = temp;
         }
-        
-        return colorPallete.Take(Line.maxCols).ToArray(); 
+
+        return colorPallete.Take(Line.maxCols).ToArray();
     }
 }

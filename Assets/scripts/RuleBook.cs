@@ -1,32 +1,45 @@
 ﻿
 using System;
 using UnityEngine;
-
-public class RuleBook 
+using Rules;
+public class RuleBook: MonoBehaviour
 {
-    private IRule[] _rules;
-    
 
-    public RuleBook(IRule[] rules)
-    {
-        _rules = rules;
-    }
+    public MultiColorRule multiColorRule;
+    public ColorRepeatRule colorRepeatRule;
+    private int _colorRangeSize = 4;
 
-    public void ApplyRules(Line line, CodeLine codeLine)
+    //Singleton instantiation
+    private static RuleBook _instance;
+    private const string _instanceName = "RuleBook Ref";
+
+    public static RuleBook Instance
     {
-        foreach(IRule rule in this._rules){
-            rule.ApplyRule(line, codeLine);
+        get
+        {
+            if (_instance == null) _instance = FindObjectOfType<RuleBook>();
+            {
+                return _instance;
+            }
         }
     }
 
-    public void SetCodePeg(Line line, Color color)
+    private void Awake()
     {
-        Array.ForEach(_rules, rule => rule.OnSetPeg(line, color));
+        if (GameObject.Find(_instanceName)) Destroy(gameObject);
     }
 
-    public void OnCodeCreation(CodeLine codeLine, Color color)
+
+    private void Start()
     {
-        Array.ForEach(_rules, rule => rule.OnCodeCreation(codeLine, color));
+        colorRepeatRule = new ColorRepeatRule();
+        colorRepeatRule.repeatable = false;
+
+        multiColorRule = new MultiColorRule();
+        multiColorRule.SetColorRange(_colorRangeSize);
     }
+
+
+
 
 }
