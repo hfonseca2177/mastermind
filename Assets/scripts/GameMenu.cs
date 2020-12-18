@@ -5,9 +5,12 @@ using TMPro;
 
 public class GameMenu : MonoBehaviour
 {
-
+    [Header("References")]
     [SerializeField] private GameObject toggleColorRepeate;
     [SerializeField] private GameObject dropdownColorRange;
+    [SerializeField] private AudioSource sfxAudioSource;
+    [SerializeField] private AudioClip choiceMadeClip;
+
 
     private void Start()
     {
@@ -31,11 +34,13 @@ public class GameMenu : MonoBehaviour
 
     public void PlayGame()
     {
+        PlayOptionSelected();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void QuitGame()
     {
+        PlayOptionSelected();
         Application.Quit();
     }
 
@@ -63,11 +68,13 @@ public class GameMenu : MonoBehaviour
 
         }
         RuleBook.Instance.multiColorRule.SetColorRange(colorRange);
+        PlayOptionSelected();
     }
 
     public void RepeatableOptionChange(bool repeatable)
     {
         RuleBook.Instance.colorRepeatRule.repeatable = repeatable;
+        PlayOptionSelected();
     }
 
     private int ConvertColorRangeToIndex(int length)
@@ -92,6 +99,11 @@ public class GameMenu : MonoBehaviour
                 }
         }
         return dropdownIndex;
+    }
+
+    private void PlayOptionSelected()
+    {
+        sfxAudioSource.PlayOneShot(choiceMadeClip);
     }
 
 }

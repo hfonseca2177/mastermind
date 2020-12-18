@@ -1,18 +1,33 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections;
+
 public class GameControl : MonoBehaviour
 {
-    public BoardControl boardControl;
+    
     private bool _codeCracked = false;
-    private float _score = 0;
+
+    [Header("References")]
+    public BoardControl boardControl;
     [SerializeField] private GameObject gameLogObj;
     [SerializeField] private GameObject[] colorButtons;
+    private TextMeshProUGUI log;
+    [SerializeField] private GameObject winGamePanel;
+    [SerializeField] private GameObject lossGamePanel;
+    [SerializeField] private GameObject confirmButton;
+    [SerializeField] private GameObject cleanButton;
+
+
+    [Header("Audio SFX")]
+    [SerializeField] private AudioSource sfxAudioSource;
+    [SerializeField] private AudioClip colorSelectedClip;
+    [SerializeField] private AudioClip winClip;
+    [SerializeField] private AudioClip lossClip;
 
     private void Start()
     {
-        TextMeshProUGUI log = gameLogObj.GetComponent<TextMeshProUGUI>();
-        log.text += "<br> Game Started";
+        log = gameLogObj.GetComponent<TextMeshProUGUI>();
         boardControl.InstantiateBoardGame();
         StartGame();
     }
@@ -25,6 +40,7 @@ public class GameControl : MonoBehaviour
 
     public void RestartGame()
     {
+        ToggleLineCommands(true);
         boardControl.CleanPegs();
         boardControl.ShowLid();
         boardControl.GenerateCodePegs();
@@ -35,27 +51,28 @@ public class GameControl : MonoBehaviour
     {
         try
         {
+            sfxAudioSource.PlayOneShot(colorSelectedClip);
             Color color = RuleBook.Instance.multiColorRule.GetFullColorRange()[colorIndex];
             boardControl.SetCodePeg(color);
         }
         catch(System.ArgumentException e)
         {
-            //show message
-            Debug.Log(e.Message);
+            LogMessage(e.Message);
         }
     }
 
     public void ConfirmCode()
     {
+        boardControl.EvaluateClues();
         _codeCracked  = boardControl.IsCurrentLineCodeBreaker();
         if (_codeCracked || boardControl.IsLastLine())
         {
             EndGame();
         }
         else
-        {
-            boardControl.EvaluateClues();
+        {            
             boardControl.MoveNextLine();
+            EnabledColorButtons();
         }
     }
       
@@ -66,40 +83,32 @@ public class GameControl : MonoBehaviour
     }
     void EndGame()
     {
+        ToggleLineCommands(false);
         boardControl.HideLid();
         if (_codeCracked)
         {
+            sfxAudioSource.PlayOneShot(winClip);
             WinGame();
         }else
         {
+            sfxAudioSource.PlayOneShot(lossClip);
             LoseGame();
         }        
     }
 
     void WinGame()
     {
-        //calc score
-        _score = 100;
-        //ShowMessage
-        //ShowScore
+        StartCoroutine(ShowEndPanel(winGamePanel, "You Won!"));
     }
 
     void LoseGame()
     {
-        
-        //ShowMessage
-        //ShowOptionRestart
+        StartCoroutine(ShowEndPanel(lossGamePanel, "You Lose!"));
     }
 
     public void OpenGameMenu()
     {
         SceneManager.LoadScene(0);
-    }
-
-    void SaveGameOptions()
-    {
-        //Update Rules
-        //Option Restart Current Game
     }
 
     private void EnabledColorButtons()
@@ -114,5 +123,23 @@ public class GameControl : MonoBehaviour
     public void DisableColorButton(GameObject colorButton)
     {
         colorButton.SetActive(RuleBook.Instance.colorRepeatRule.repeatable);
+    }
+
+    private void LogMessage(string message)
+    {
+        log.text += "<br>" + message;
+    }
+
+    private IEnumerator ShowEndPanel(GameObject panel, string message)
+    {
+        panel.SetActive(true);
+        yield return new WaitForSeconds(4f);
+        panel.SetActive(false);
+    }
+
+    private void ToggleLineCommands(bool toggle)
+    {
+        confirmButton.SetActive(toggle);
+        cleanButton.SetActive(toggle);
     }
 }
