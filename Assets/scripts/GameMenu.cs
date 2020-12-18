@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -13,18 +11,21 @@ public class GameMenu : MonoBehaviour
 
     private void Start()
     {
+
         Toggle toggle = toggleColorRepeate.GetComponent<Toggle>();
         if (toggle != null)
         {
-            Debug.Log("Toggle Found!");
             toggle.SetIsOnWithoutNotify(RuleBook.Instance.colorRepeatRule.repeatable);
         }
 
         TMP_Dropdown dropddown = dropdownColorRange.GetComponent<TMP_Dropdown>();
         if (dropddown != null)
         {
-            Debug.Log("DropDown Found!");
-            dropddown.value = RuleBook.Instance.multiColorRule.GetColorSet().Length;
+            dropddown.value = ConvertColorRangeToIndex(RuleBook.Instance.multiColorRule.GetColorSet().Length);
+            dropddown.onValueChanged.AddListener(delegate
+            {
+                ColorRangeOptionChange(dropddown);
+            });
         }
     }
 
@@ -38,10 +39,11 @@ public class GameMenu : MonoBehaviour
         Application.Quit();
     }
 
-    public void ColorRangeOptionChange(int optionIndex)
+    public void ColorRangeOptionChange(TMP_Dropdown dropddown)
     {
+
         int colorRange = 0;
-        switch (optionIndex)
+        switch (dropddown.value)
         {
             case 0:
                 {
@@ -67,4 +69,29 @@ public class GameMenu : MonoBehaviour
     {
         RuleBook.Instance.colorRepeatRule.repeatable = repeatable;
     }
+
+    private int ConvertColorRangeToIndex(int length)
+    {
+        int dropdownIndex = 0;
+        switch (length)
+        {
+            case 4:
+                {
+                    dropdownIndex = 0;
+                    break;
+                }
+            case 6:
+                {
+                    dropdownIndex = 1;
+                    break;
+                }
+            case 8:
+                {
+                    dropdownIndex = 2;
+                    break;
+                }
+        }
+        return dropdownIndex;
+    }
+
 }

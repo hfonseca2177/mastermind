@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 using Rules;
-public class RuleBook: MonoBehaviour
+public class RuleBook : MonoBehaviour
 {
 
     public MultiColorRule multiColorRule;
@@ -18,29 +18,27 @@ public class RuleBook: MonoBehaviour
         get
         {
             if (_instance == null) _instance = FindObjectOfType<RuleBook>();
-            {
-                return _instance;
-            }
+            return _instance;
         }
+    }
+
+    public RuleBook()
+    {
+        colorRepeatRule = new ColorRepeatRule();
+        colorRepeatRule.repeatable = false;
+        multiColorRule = new MultiColorRule();
+        multiColorRule.SetColorRange(_colorRangeSize);
     }
 
     private void Awake()
     {
         if (GameObject.Find(_instanceName)) Destroy(gameObject);
-        colorRepeatRule = new ColorRepeatRule();
-        colorRepeatRule.repeatable = false;
-
-        multiColorRule = new MultiColorRule();
-        multiColorRule.SetColorRange(_colorRangeSize);
     }
-
 
     private void Start()
     {
-   
+        DontDestroyOnLoad(gameObject);
+        gameObject.name = _instanceName;
     }
-
-
-
 
 }
